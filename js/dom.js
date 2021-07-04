@@ -16,18 +16,15 @@ function makeTodo(data, timestamp, isCompleted) {
     const container = document.createElement("div");
     container.classList.add("item", "shadow")
     container.append(textContainer);
-    container.append(createCheckButton());
-
-    if (isCompleted) {
-        container.append(createTrashButton());
-    } else {
-        container.append(createCheckButton());
-    }
 
     if (isCompleted) {
         container.append(
             createUndoButton(),
             createTrashButton()
+        );
+    } else {
+        container.append(
+            createCheckButton()
         );
     }
 
