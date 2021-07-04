@@ -10,6 +10,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background-color: black;
 }
 
 header {
@@ -28,10 +29,11 @@ header {
     width: 1024px;
     border-radius: 8px;
     margin: 16px;
-    background: #F8F9FA;
+    background: #333333;
     padding: 16px;
     flex-grow: 1;
     height: fit-content;
+    color: white;
 }
 
 
