@@ -10,13 +10,19 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* sementara merubah background color */
     background-color: black;
+    color: white;
 }
 
 header {
     background: #5F30E2;
     padding: 16px;
     color: white;
+}
+
+.list-item {
+    color: black;
 }
 
 .wrapper {
