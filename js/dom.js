@@ -1,7 +1,8 @@
 const UNCOMPLETED_LIST_TODO_ID = "todos";
 const COMPLETED_LIST_TODO_ID = "completed-todos";
+const TODO_ITEMID = "itemId";
 
-function makeTodo(data /* string */, timestamp /* string */, isCompleted /* boolean */) {
+function makeTodo(data /* string */ , timestamp /* string */ , isCompleted /* boolean */ ) {
 
     const textTitle = document.createElement("h2");
     textTitle.innerText = data;
@@ -16,8 +17,8 @@ function makeTodo(data /* string */, timestamp /* string */, isCompleted /* bool
     const container = document.createElement("div");
     container.classList.add("item", "shadow")
     container.append(textContainer);
-    
-    if(isCompleted){
+
+    if (isCompleted) {
         container.append(
             createUndoButton(),
             createTrashButton()
@@ -32,24 +33,24 @@ function makeTodo(data /* string */, timestamp /* string */, isCompleted /* bool
 }
 
 function createUndoButton() {
-    return createButton("undo-button", function(event){
+    return createButton("undo-button", function (event) {
         undoTaskFromCompleted(event.target.parentElement);
     });
 }
 
 function createTrashButton() {
-    return createButton("trash-button", function(event){
+    return createButton("trash-button", function (event) {
         removeTaskFromCompleted(event.target.parentElement);
     });
 }
 
 function createCheckButton() {
-    return createButton("check-button", function(event){
+    return createButton("check-button", function (event) {
         addTaskToCompleted(event.target.parentElement);
     });
 }
 
-function createButton(buttonTypeClass /* string */, eventListener /* callback function */) {
+function createButton(buttonTypeClass /* string */ , eventListener /* callback function */ ) {
     const button = document.createElement("button");
     button.classList.add(buttonTypeClass);
     button.addEventListener("click", function (event) {
@@ -63,32 +64,55 @@ function addTodo() {
     const uncompletedTODOList = document.getElementById(UNCOMPLETED_LIST_TODO_ID);
     const textTodo = document.getElementById("title").value;
     const timestamp = document.getElementById("date").value;
+
     const todo = makeTodo(textTodo, timestamp, false);
+    const todoObject = composeTodoObject(textTodo, timestamp, false);
+
+    todo[TODO_ITEMID] = todoObject.id;
+    todos.push(todoObject);
 
     uncompletedTODOList.append(todo);
+    updateDataToStorage();
 }
-function addTaskToCompleted(taskElement /* HTMLELement */) {
+
+function addTaskToCompleted(taskElement /* HTMLELement */ ) {
     const listCompleted = document.getElementById(COMPLETED_LIST_TODO_ID);
     const taskTitle = taskElement.querySelector(".inner > h2").innerText;
     const taskTimestamp = taskElement.querySelector(".inner > p").innerText;
 
     const newTodo = makeTodo(taskTitle, taskTimestamp, true);
+    const todo = findTodo(taskElement[TODO_ITEMID]);
+    todo.isCompleted = true;
+    newTodo[TODO_ITEMID] = todo.id;
 
     listCompleted.append(newTodo);
     taskElement.remove();
+
+    updateDataToStorage();
 }
 
-function removeTaskFromCompleted(taskElement /* HTMLELement */) {
+function removeTaskFromCompleted(taskElement /* HTMLELement */ ) {
+    const todoPosition = findTodoIndex(taskElement[TODO_ITEMID]);
+    todos.splice(todoPosition, 1);
+
     taskElement.remove();
+
+    updateDataToStorage();
 }
 
-function undoTaskFromCompleted(taskElement /* HTMLELement */){
+function undoTaskFromCompleted(taskElement /* HTMLELement */ ) {
     const listUncompleted = document.getElementById(UNCOMPLETED_LIST_TODO_ID);
     const taskTitle = taskElement.querySelector(".inner > h2").innerText;
     const taskTimestamp = taskElement.querySelector(".inner > p").innerText;
 
     const newTodo = makeTodo(taskTitle, taskTimestamp, false);
 
+    const todo = findTodo(taskElement[TODO_ITEMID]);
+    todo.isCompleted = false;
+    newTodo[TODO_ITEMID] = todo.id;
+
     listUncompleted.append(newTodo);
     taskElement.remove();
+
+    updateDataToStorage();
 }
